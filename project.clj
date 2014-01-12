@@ -12,4 +12,4 @@
       :compiler { :output-to "app.js"
                   :target :nodejs
                   :optimizations :simple
-                  :pretty-print false }}]})
+                  :pretty-print true }}]})
