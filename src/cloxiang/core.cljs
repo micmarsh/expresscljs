@@ -15,7 +15,7 @@
             (.use (.logger express))
             (.get "/" (fn [req res]
                 (do (.send res "Yo World")
-                    (log req))))
+                    (log req)))))
             (.get "/move" (fn [req res]
                 (log (aget req "socket"))))
             (.get "/\\w{5}" register-player)
