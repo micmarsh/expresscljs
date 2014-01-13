@@ -1,8 +1,6 @@
 (ns cloxiang.core
-    (:use [cloxiang.handlers
-        :only [register-player]
-           cloxiang.sockets
-        :only [accept-sockets]]))
+    (:use [cloxiang.handlers :only [register-player]]
+          [cloxiang.sockets :only [accept-sockets]]))
 
 (defn stringify [json]
     (.stringify js/JSON json))
