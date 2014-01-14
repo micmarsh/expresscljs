@@ -8,6 +8,8 @@
 
 (defn -main [& args]
     (initialize
-      [:get "/" #(identity "yo world")]))
+      [:get "/" #(identity "yo world")]
+      [:get "/whatup" (let [i (atom 0)]
+                         #(-> i (swap! inc) str))]))
 
 (set! *main-cli-fn* -main)

@@ -8,10 +8,10 @@
     (fn [request response]
         (let [result (async-callback request)]
             (cond (string? result)
-                (.write response result)
+                (.send response result)
                 :else ; it's a channel ho shit
                     (go
-                        (.write response (<! result)))))))
+                        (.send response (<! result)))))))
 
 (defn- register-route [app route]
     (let [[type path callback] route
