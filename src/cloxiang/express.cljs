@@ -1,29 +1,31 @@
 (ns cloxiang.express
       (:use
         [cljs.core :only [clj->js js->clj]]
-        [cljs.core.async :only [<!, chan]]
+        [cljs.core.async :only [take! chan]]
         [clojure.string :only [lower-case]])
       (:use-macros [cljs.core.async.macros :only [go]]))
 
 (def handle-channel
   (let [chan-type (type (chan))]
-    (fn [result]
+    (fn [result fn1]
+        (do (println result)
         (cond
             (= chan-type (type result))
-              (go (handle-channel (<! result)))
+              (take! result
+                #(handle-channel % fn1))
             (string? result)
-              result
+              (fn1 result)
             (map? result)
-              (clj->js result)
+              (-> result clj->js fn1)
             :else
-              (str result)))))
+              (-> result str fn1))))))
 
 (defn- async->express [async-callback]
     (fn [request response]
-        (let [result (async-callback request)]
-            (->> result
-                handle-channel
-                (.send response)))))
+        (let [result (-> request js->clj async-callback)]
+            (handle-channel result
+              (fn [value]
+                (.send response value))))))
 
 (defn- register-route [app route]
     (let [[type path callback] route
@@ -49,7 +51,7 @@
               (map? item)
                 (do
                   (reset! port (:port item))
-                  (reset! static (:static-dir item)))))
+                  (reset! static (:static item)))))
           (if @static
               (.use app
                 (.static express

@@ -1,5 +1,11 @@
 (ns cloxiang.core
-    (:use [cloxiang.express :only [initialize]]
+    (:use-macros [cljs.core.async.macros :only [go]])
+
+    (:use
+          [cljs.core.async :only [>! chan]]
+
+
+          [cloxiang.express :only [initialize]]
           [cloxiang.handlers :only [register-player]]
           [cloxiang.sockets :only [accept-sockets, on-open, on-close]]))
 
@@ -8,9 +14,13 @@
 
 (defn -main [& args]
     (initialize
-      [:get "/" #(identity "yo world")]
-      [:get "/whatup" (let [i (atom 0)]
+      [:GET "/" #(identity "yo world")]
+      [:GET "/whatup" (let [i (atom 0)]
                          #(-> i (swap! inc) str))]
+      [:GET "/yo" #(let [c (chan)]
+                      (go (>! c "yoooo"))
+                      c)]
+
       {:port 1337
        :static "public"}))
 
