@@ -28,4 +28,5 @@
           ; sockets (accept-sockets server)]
           (doseq [item args]
             (cond (vector? item)
-                (register-route app item)))))
+                (register-route app item)))
+          (.listen app 3000)))
