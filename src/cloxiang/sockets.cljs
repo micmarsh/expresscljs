@@ -7,10 +7,18 @@
         (js/require "websocket")
             "server"))
 
+(defn printret [thing]
+    (do
+        (println thing)
+        thing))
+
+(defn make-args [server]
+    {:httpServer server
+     :autoAcceptConnections true})
+
 (defn accept-sockets [server]
     (-> server
-        #({:httpServer %
-            :autoAcceptConnections true})
+        make-args
         clj->js
         websocket.))
 
