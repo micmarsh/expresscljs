@@ -24,11 +24,16 @@
 (defn initialize [& args]
     (let [express (js/require "express")
           http (js/require "http")
-          app (express)]
+          app (express)
+          port (atom 3000)]
           ; server (.createServer http app)
           ; sockets (accept-sockets server)]
           (.use app (.logger express))
           (doseq [item args]
-            (cond (vector? item)
-                (register-route app item)))
-          (.listen app 3000)))
+            (cond
+              (vector? item)
+                (register-route app item)
+              (map? item)
+                (reset! port (:port item))))
+          (.listen app @port)
+          (println (str "Express server listening on port " @port))))

@@ -10,6 +10,7 @@
     (initialize
       [:get "/" #(identity "yo world")]
       [:get "/whatup" (let [i (atom 0)]
-                         #(-> i (swap! inc) str))]))
+                         #(-> i (swap! inc) str))]
+      {:port 1337}))
 
 (set! *main-cli-fn* -main)
