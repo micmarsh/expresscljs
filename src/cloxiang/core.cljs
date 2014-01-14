@@ -8,6 +8,6 @@
 
 (defn -main [& args]
     (initialize
-      '(:get "/" #(identity "yo world"))))
+      [:get "/" #(identity "yo world")]))
 
 (set! *main-cli-fn* -main)

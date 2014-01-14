@@ -16,7 +16,8 @@
 (defn- register-route [app route]
     (let [[type path callback] route
           fn-name (-> type name lower-case)]
-        ((aget app fn-name)
+          ;SCOPE!
+        (.call (aget app fn-name) app
             path
             (async->express callback))))
 
@@ -26,6 +27,7 @@
           app (express)]
           ; server (.createServer http app)
           ; sockets (accept-sockets server)]
+          (.use app (.logger express))
           (doseq [item args]
             (cond (vector? item)
                 (register-route app item)))
