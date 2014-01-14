@@ -1,17 +1,25 @@
 (ns cloxiang.express
       (:use
-        [cljs.core.async :only [<!]]
+        [cljs.core :only [clj->js js->clj]]
+        [cljs.core.async :only [<!, chan]]
         [clojure.string :only [lower-case]])
       (:use-macros [cljs.core.async.macros :only [go]]))
+
+(def handle-channel
+  (let [chan-type (type (chan))]
+    (fn [result]
+        (cond
+            (= chan-type (type result))
+              (go (handle-channel (<! result)))
+            (string? result)
+              result))))
 
 (defn- async->express [async-callback]
     (fn [request response]
         (let [result (async-callback request)]
-            (cond (string? result)
-                (.send response result)
-                :else ; it's a channel ho shit
-                    (go
-                        (.send response (<! result)))))))
+            (->> result
+                handle-channel
+                (.send response)))))
 
 (defn- register-route [app route]
     (let [[type path callback] route
