@@ -79,7 +79,7 @@
               (if = (aget conn "state") "open")
                 (->> result str (.sendUTF conn)))))))
 
-(def methods {
+(def functions {
   :open on-open
   :message on-message
   :close on-close
@@ -89,7 +89,8 @@
     (let [http (js/require "http")
           server (.createServer http app)
           sockets (accept-sockets server)]
-          (doseq [[type route callback] vecs]
-            ((type methods) sockets route
+          (doseq [[type route callback] vecs
+                  function [(type functions)]]
+            (function sockets route
               (async->socket callback)))
           app))
