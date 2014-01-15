@@ -16,7 +16,8 @@
   ;TODO
   ;   socket setup (need to figure out how sockets actually work for that)
   ;   TESTS in cljs, how tricky
-    (-> (initialize
+    (->
+    (initialize
       [:GET "/" #(identity "yo world")]
       [:GET "/whatup" (let [i (atom 0)]
                          #(-> i (swap! inc) str))]
@@ -26,7 +27,8 @@
       {:port 1337
        :static "public"})
 
-      (with-sockets
+    (with-sockets
+        [:open "/yo" #(println "waaaaaah")]
         [:message "/yo" identity])
     ))
 

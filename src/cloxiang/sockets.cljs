@@ -31,8 +31,9 @@
 (defn on-open [sockets route callback]
     (.on sockets "request"
         (fn [req]
+            (do (println "oh shit an on-open" route (get-route req))
             (if (= route (get-route req))
-                (callback req)))))
+                (callback req))))))
 
 
 (defn- connection [req]
@@ -44,11 +45,10 @@
     (on-open sockets route
         (fn [req]
             (let [conn (connection req)
-                  from-route (get-route req)]
+                  n (println "setting" type)]
                   (.on conn type
-                    (fn [input]
-                        (if (= route from-route)
-                            (callback req input))))))))
+                    ;route checking handled on on-open
+                    #(callback req %))))))
 
 (def on-message (partial on "message"))
 (def on-close (partial on "close"))
@@ -73,7 +73,8 @@
 (defn async->socket [async-callback]
   (fn [req & [msg]]
     (let [result (async-callback (if msg msg req))
-          conn (connection req)]
+          conn (connection req)
+          n (println "lolz converting function")]
           (handle-channel result
             (fn [result]
               (if = (aget conn "state") "open")
@@ -86,11 +87,14 @@
   })
 
 (defn with-sockets [app & vecs]
-    (let [http (js/require "http")
+    (let [n (println "yo homies calling with-sockets")
+          http (js/require "http")
           server (.createServer http app)
           sockets (accept-sockets server)]
           (doseq [[type route callback] vecs
-                  function [(type functions)]]
+                  function [(type functions)]
+                  z [(println "yo homies processing on of those vecs"
+                    type route callback)]]
             (function sockets route
               (async->socket callback)))
           app))

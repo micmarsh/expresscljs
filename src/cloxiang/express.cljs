@@ -3,7 +3,7 @@
         [cljs.core :only [clj->js js->clj]]
         [cljs.core.async :only [take! chan]]
         [clojure.string :only [lower-case]]
-        [cloxiang.utils :only [handle-channel]])
+        [cloxiang.utils :only [handle-channel mget]])
       (:use-macros [cljs.core.async.macros :only [go]]))
 
 
@@ -16,10 +16,9 @@
 
 (defn- register-route [app route]
     (let [[type path callback] route
-          fn-name (-> type name lower-case)]
-          ;SCOPE!
-        (.call (aget app fn-name) app
-            path
+          fn-name (-> type name lower-case)
+          method (mget app fn-name)]
+        (method path
             (async->express callback))))
 
 (defn initialize [& args]
