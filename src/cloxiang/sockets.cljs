@@ -77,8 +77,8 @@
           n (println "lolz converting function")]
           (handle-channel result
             (fn [result]
-              (if = (aget conn "state") "open")
-                (->> result str (.sendUTF conn)))))))
+              (if (= (aget conn "state") "open")
+                (->> result str (.sendUTF conn))))))))
 
 (def functions {
   :open on-open
