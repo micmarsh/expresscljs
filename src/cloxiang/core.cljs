@@ -23,11 +23,11 @@
       [:GET "/yo" #(let [c (chan)]
                       (go (>! c "yoooo"))
                       c)]
-
       {:port 1337
        :static "public"})
+
       (with-sockets
-        [:socket-message "/yo" identity])
+        [:message "/yo" identity])
     ))
 
 (set! *main-cli-fn* -main)

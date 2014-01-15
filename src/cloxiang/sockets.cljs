@@ -80,9 +80,9 @@
                 (->> result str (.sendUTF conn)))))))
 
 (def methods {
-  :socket-open on-open
-  :socket-message on-message
-  :socket-close on-close
+  :open on-open
+  :message on-message
+  :close on-close
   })
 
 (defn with-sockets [app & vecs]
