@@ -22,16 +22,52 @@
         clj->js
         websocket.))
 
-(defn on-open [sockets callback]
-    (.on sockets "request" callback))
+(defn- get-route [request]
+    (-> request
+        (aget "resourceURL")
+        (aget "path")))
 
-(defn- on [type sockets callback]
-    (on-open sockets
+(defn on-open [sockets route callback]
+    (.on sockets "request"
+        (fn [req]
+            (if (= route (get-route req))
+                (callback req)))))
+
+(defn- on [type sockets route callback]
+    (on-open sockets route
         (fn [req]
             (let [accept (aget req  "accept")
-                  open-conn (partial accept "echo-protocol")
-                  conn (open-conn (aget req "origin"))]
-                  (.on conn type callback)))))
+                  open-conn (partial accept nil)
+                  conn (open-conn (aget req "origin"))
+                  from-route (get-route req)]
+                  (.on conn type
+                    (fn [input]
+                        (if (= route from-route)
+                            (callback req input))))))))
 
 (def on-message (partial on "message"))
 (def on-close (partial on "close"))
+
+; planing:
+
+; the way the api looks:
+; [:socket-open "/foo" (fn[req](aget req "property"))]
+; [:socket-message "/foo" (fn[msg](str "woo " msg))]
+; ;socket close prolly can't write back, so just use for side effects
+; program to abstraction: need a async->socket fn:
+; (defn a-s [asyn-cb]
+;    (fn [req & [msg]]
+;       (let [result (asyn-cb (req or msg if msg))
+;             conn (get connection from req)]
+;           (handle-channel result #(conn.sendUTF (str %))))))
+;                                   if not closed or whatevs
+
+;THEN can wrap that^ around the things U pass to on-open, etc.
+;, the things that come from 'vecs' down there
+
+(defn with-sockets [app & vecs]
+    (let [http (js/require "http")
+          server (.createServer http app)
+          sockets (accept-sockets server)]
+
+          app))

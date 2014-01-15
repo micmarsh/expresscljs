@@ -37,12 +37,9 @@
 
 (defn initialize [& args]
     (let [express (js/require "express")
-          http (js/require "http")
           app (express)
           port (atom 3000)
           static (atom nil)]
-          ; server (.createServer http app)
-          ; sockets (accept-sockets server)]
           (.use app (.logger express))
           (doseq [item args]
             (cond
@@ -58,4 +55,5 @@
                   (.join (js/require "path")
                     js/__dirname @static))))
           (.listen app @port)
-          (println (str "Express server listening on port " @port))))
+          (println (str "Express server listening on port " @port))
+          app))
