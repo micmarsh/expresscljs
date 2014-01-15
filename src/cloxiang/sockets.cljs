@@ -1,6 +1,7 @@
 (ns cloxiang.sockets
     (:use [cljs.core :only
-            [clj->js js->clj]]))
+            [clj->js js->clj]]
+          [cloxiang.utils :only [handle-channel mget]]))
 
 (def websocket
     (aget
@@ -33,12 +34,16 @@
             (if (= route (get-route req))
                 (callback req)))))
 
+
+(defn- connection [req]
+  (let [accept (mget req "accept")
+        open-conn (partial accept nil)]
+        (open-conn (aget req "origin"))))
+
 (defn- on [type sockets route callback]
     (on-open sockets route
         (fn [req]
-            (let [accept (aget req  "accept")
-                  open-conn (partial accept nil)
-                  conn (open-conn (aget req "origin"))
+            (let [conn (connection req)
                   from-route (get-route req)]
                   (.on conn type
                     (fn [input]
@@ -65,9 +70,26 @@
 ;THEN can wrap that^ around the things U pass to on-open, etc.
 ;, the things that come from 'vecs' down there
 
+(defn async->socket [async-callback]
+  (fn [req & [msg]]
+    (let [result (async-callback (if msg msg req))
+          conn (connection req)]
+          (handle-channel result
+            (fn [result]
+              (if = (aget conn "state") "open")
+                (->> result str (.sendUTF conn)))))))
+
+(def methods {
+  :socket-open on-open
+  :socket-message on-message
+  :socket-close on-close
+  })
+
 (defn with-sockets [app & vecs]
     (let [http (js/require "http")
           server (.createServer http app)
           sockets (accept-sockets server)]
-
+          (doseq [[type route callback] vecs]
+            ((type methods) sockets route
+              (async->socket callback)))
           app))

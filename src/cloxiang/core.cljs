@@ -7,7 +7,7 @@
 
           [cloxiang.express :only [initialize]]
           [cloxiang.handlers :only [register-player]]
-          [cloxiang.sockets :only [accept-sockets, on-open, on-close]]))
+          [cloxiang.sockets :only [with-sockets]]))
 
 (defn stringify [json]
     (.stringify js/JSON json))
@@ -16,7 +16,7 @@
   ;TODO
   ;   socket setup (need to figure out how sockets actually work for that)
   ;   TESTS in cljs, how tricky
-    (initialize
+    (-> (initialize
       [:GET "/" #(identity "yo world")]
       [:GET "/whatup" (let [i (atom 0)]
                          #(-> i (swap! inc) str))]
@@ -25,6 +25,9 @@
                       c)]
 
       {:port 1337
-       :static "public"}))
+       :static "public"})
+      (with-sockets
+        [:socket-message "/yo" identity])
+    ))
 
 (set! *main-cli-fn* -main)

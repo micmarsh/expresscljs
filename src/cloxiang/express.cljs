@@ -2,23 +2,10 @@
       (:use
         [cljs.core :only [clj->js js->clj]]
         [cljs.core.async :only [take! chan]]
-        [clojure.string :only [lower-case]])
+        [clojure.string :only [lower-case]]
+        [cloxiang.utils :only [handle-channel]])
       (:use-macros [cljs.core.async.macros :only [go]]))
 
-(def handle-channel
-  (let [chan-type (type (chan))]
-    (fn [result fn1]
-        (do (println result)
-        (cond
-            (= chan-type (type result))
-              (take! result
-                #(handle-channel % fn1))
-            (string? result)
-              (fn1 result)
-            (map? result)
-              (-> result clj->js fn1)
-            :else
-              (-> result str fn1))))))
 
 (defn- async->express [async-callback]
     (fn [request response]
