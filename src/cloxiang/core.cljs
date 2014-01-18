@@ -12,21 +12,23 @@
 (defn stringify [json]
     (.stringify js/JSON json))
 
+(def chan-test #(let [c (chan)]
+                      (go (>! c "yoooo"))
+                      c))
+
 (defn -main [& args] (->
 
     (initialize
       [:GET "/" #(identity "yo world")]
       [:GET "/whatup" (let [i (atom 0)]
                          #(-> i (swap! inc) str))]
-      [:GET "/yo" #(let [c (chan)]
-                      (go (>! c "yoooo"))
-                      c)]
+      [:GET "/yo" chan-test]
       {:port 1337
        :static "public"})
 
     (with-sockets
         [:open "/yo" #(println "waaaaaah")]
-        [:message "/yo" identity])
+        [:message "/yo" chan-test])
     ))
 
 (set! *main-cli-fn* -main)
