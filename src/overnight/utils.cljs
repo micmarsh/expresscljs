@@ -1,4 +1,4 @@
-(ns express.utils
+(ns overnight.utils
     (:use [cljs.core.async :only [take! chan]]
           [cljs.core :only [clj->js]]))
 
@@ -12,7 +12,8 @@
 (def CHAN_TYPE  (type (chan)))
 
 (defn handle-channel
-  "Given a \"result\" (a value or a channel that will eventually give you a value) and a callback, makes sure the value gets into the callback"
+  "Given a \"result\" (a value or a channel that will eventually give you a value)
+   and a callback, makes sure the final value gets into the callback"
    [result fn1]
         (cond
             (= CHAN_TYPE (type result))

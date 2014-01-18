@@ -1,10 +1,10 @@
-(ns express.core
+(ns overnight.core
     (:use
           [cljs.core.async :only [put! chan]]
 
-          [express.express :only [initialize]]
-          [express.handlers :only [register-player]]
-          [express.sockets :only [with-sockets]]))
+          [overnight.server :only [initialize]]
+          [overnight.handlers :only [register-player]]
+          [overnight.sockets :only [with-sockets]]))
 
 (defn stringify [json]
     (.stringify js/JSON json))

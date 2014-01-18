@@ -1,7 +1,7 @@
-(ns express.sockets
+(ns overnight.sockets
     (:use [cljs.core :only
             [clj->js js->clj]]
-          [express.utils :only [handle-channel mget]]))
+          [overnight.utils :only [handle-channel mget]]))
 
 (def websocket
     (aget
