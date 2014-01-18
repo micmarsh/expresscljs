@@ -1,4 +1,4 @@
-(defproject overnight "0.1.0"
+(defproject overnight "0.1.1"
   :description "A minimal ClojureScript wrapper around Express and WS"
   :url "http://github.com/micmarsh/overnight"
   :license {:name "Eclipse Public License"
