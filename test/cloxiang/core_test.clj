@@ -1,6 +1,6 @@
-(ns cloxiang.core-test
+(ns express.core-test
   (:require [clojure.test :refer :all]
-            [cloxiang.core :refer :all]))
+            [express.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."

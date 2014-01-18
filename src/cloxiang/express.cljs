@@ -1,9 +1,9 @@
-(ns cloxiang.express
+(ns express.express
       (:use
         [cljs.core :only [clj->js js->clj]]
         [cljs.core.async :only [take! chan]]
         [clojure.string :only [lower-case]]
-        [cloxiang.utils :only [handle-channel mget]])
+        [express.utils :only [handle-channel mget]])
       (:use-macros [cljs.core.async.macros :only [go]]))
 
 

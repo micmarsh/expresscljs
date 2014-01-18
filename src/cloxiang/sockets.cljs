@@ -1,7 +1,7 @@
-(ns cloxiang.sockets
+(ns express.sockets
     (:use [cljs.core :only
             [clj->js js->clj]]
-          [cloxiang.utils :only [handle-channel mget]]))
+          [express.utils :only [handle-channel mget]]))
 
 (def websocket
     (aget
@@ -31,7 +31,6 @@
         (fn [ws]
             (if (= route (get-route ws))
                 (callback ws)))))
-
 
 (defn- on [type sockets route callback]
     (on-open sockets route

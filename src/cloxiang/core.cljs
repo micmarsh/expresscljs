@@ -1,19 +1,16 @@
-(ns cloxiang.core
-    (:use-macros [cljs.core.async.macros :only [go]])
-
+(ns express.core
     (:use
-          [cljs.core.async :only [>! chan]]
+          [cljs.core.async :only [put! chan]]
 
-
-          [cloxiang.express :only [initialize]]
-          [cloxiang.handlers :only [register-player]]
-          [cloxiang.sockets :only [with-sockets]]))
+          [express.express :only [initialize]]
+          [express.handlers :only [register-player]]
+          [express.sockets :only [with-sockets]]))
 
 (defn stringify [json]
     (.stringify js/JSON json))
 
 (def chan-test #(let [c (chan)]
-                      (go (>! c "yoooo"))
+                      (put! c "yoooo")
                       c))
 
 (defn -main [& args] (->
