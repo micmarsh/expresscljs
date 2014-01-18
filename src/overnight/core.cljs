@@ -3,7 +3,6 @@
           [cljs.core.async :only [put! chan]]
 
           [overnight.server :only [initialize]]
-          [overnight.handlers :only [register-player]]
           [overnight.sockets :only [with-sockets]]))
 
 (defn stringify [json]
