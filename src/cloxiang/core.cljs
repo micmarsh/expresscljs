@@ -12,11 +12,8 @@
 (defn stringify [json]
     (.stringify js/JSON json))
 
-(defn -main [& args]
-  ;TODO
-  ;   socket setup (need to figure out how sockets actually work for that)
-  ;   TESTS in cljs, how tricky
-    (->
+(defn -main [& args] (->
+
     (initialize
       [:GET "/" #(identity "yo world")]
       [:GET "/whatup" (let [i (atom 0)]

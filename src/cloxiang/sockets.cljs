@@ -29,6 +29,7 @@
         (aget "path")))
 
 (defn on-open [sockets route callback]
+    (println "on open method " callback)
     (.on sockets "request"
         (fn [req]
             (do (println "oh shit an on-open" route (get-route req))
@@ -53,24 +54,8 @@
 (def on-message (partial on "message"))
 (def on-close (partial on "close"))
 
-; planing:
-
-; the way the api looks:
-; [:socket-open "/foo" (fn[req](aget req "property"))]
-; [:socket-message "/foo" (fn[msg](str "woo " msg))]
-; ;socket close prolly can't write back, so just use for side effects
-; program to abstraction: need a async->socket fn:
-; (defn a-s [asyn-cb]
-;    (fn [req & [msg]]
-;       (let [result (asyn-cb (req or msg if msg))
-;             conn (get connection from req)]
-;           (handle-channel result #(conn.sendUTF (str %))))))
-;                                   if not closed or whatevs
-
-;THEN can wrap that^ around the things U pass to on-open, etc.
-;, the things that come from 'vecs' down there
-
 (defn async->socket [async-callback]
+  (println "actually converting function")
   (fn [req & [msg]]
     (let [result (async-callback (if msg msg req))
           conn (connection req)
@@ -88,9 +73,9 @@
 
 (defn with-sockets [app & vecs]
     (let [n (println "yo homies calling with-sockets")
-          http (js/require "http")
-          server (.createServer http app)
-          sockets (accept-sockets server)]
+          ; http (js/require "http")
+          ; server (.createServer http app)
+          sockets (accept-sockets app)]
           (doseq [[type route callback] vecs
                   function [(type functions)]
                   z [(println "yo homies processing on of those vecs"
