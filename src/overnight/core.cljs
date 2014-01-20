@@ -13,7 +13,6 @@
                       c))
 
 (defn -main [& args] (->
-
     (initialize
       [:get "/" #(identity "yo world")]
       [:get "/whatup" (let [i (atom 0)]
@@ -24,7 +23,7 @@
        :static "public"})
 
     (with-sockets
-        [:open "/yo" #(println "waaaaaah")]
+        [:open "/\\w{3}" #(println "waaaaaah")]
         [:message "/yo" (fn [msg ws]
                           (do
                             (println msg)

@@ -26,10 +26,16 @@
         (aget "upgradeReq")
         (aget "url")))
 
+(defn- matches? [should-be route]
+  (let [regex (js/RegExp. should-be)
+        matches (.match route regex)]
+        (or (= should-be route)
+            (= route (first matches)))))
+
 (defn on-open [sockets route callback]
     (.on sockets "connection"
         (fn [ws]
-            (if (= route (get-route ws))
+            (if (matches? route (get-route ws))
                 (callback ws)))))
 
 (defn- on [type sockets route callback]
