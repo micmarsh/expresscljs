@@ -25,7 +25,11 @@
 
     (with-sockets
         [:open "/yo" #(println "waaaaaah")]
-        [:message "/yo" chan-test])
+        [:message "/yo" (fn [msg ws]
+                          (do
+                            (println msg)
+                            (println ws)
+                            "yo"))])
     ))
 
 (set! *main-cli-fn* -main)
