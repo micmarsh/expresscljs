@@ -15,10 +15,11 @@
 (defn -main [& args] (->
 
     (initialize
-      [:GET "/" #(identity "yo world")]
-      [:GET "/whatup" (let [i (atom 0)]
+      [:get "/" #(identity "yo world")]
+      [:get "/whatup" (let [i (atom 0)]
                          #(-> i (swap! inc) str))]
-      [:GET "/yo" chan-test]
+      [:get "/yo" chan-test]
+
       {:port 1337
        :static "public"})
 

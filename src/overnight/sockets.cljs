@@ -43,7 +43,8 @@
 
 (defn async->socket [async-callback]
   (fn [ws & [msg]]
-    (let [result (async-callback (if msg msg ws))]
+    (let [result (if msg (async-callback msg ws)
+                         (async-callback ws))]
           (handle-channel result
             (fn [result]
               ;TODO somehow check to make sure ws is open b4 sending
