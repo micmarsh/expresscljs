@@ -27,7 +27,6 @@
           server (.createServer http app)
           port (atom 3000)
           static (atom nil)]
-          (.use app (.logger express))
           (doseq [item args]
             (cond
               (vector? item)
@@ -35,12 +34,15 @@
               (map? item)
                 (do
                   (reset! port (:port item))
-                  (reset! static (:static item)))))
+                  (reset! static (:static item))) 
+              (fn? item)
+                (.use app item)))
           (if @static
               (.use app
                 (.static express
                   (.join (js/require "path")
                     js/__dirname @static))))
+          (.use app (.logger express))
           (.listen server @port)
           (println (str "Express server listening on port " @port))
           server))
