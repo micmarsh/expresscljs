@@ -43,6 +43,6 @@
                   (.join (js/require "path")
                     js/__dirname @static))))
           (.use app (.logger express))
-          (.listen server @port)
-          (println (str "Express server listening on port " @port))
+          (.listen server (or @port 3000))
+          (println (str "Express server listening on port " (or @port 3000)))
           server))
